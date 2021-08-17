@@ -1,6 +1,16 @@
-printf ( y ) ;
 int x ;
 int y ;
+float z ;
+int i ;
 x = 2 ;
 y = 1 ;
+z = a + y ;
+scanf ( z ) ;
+for ( i = 0 ; i < 5 ; i++) {
+    printf ( y ) ;
+}
+if ( x == 2 ) {
+    printf ( x ) ;
+}
+printf ( y ) ;
 printf ( x ) ;
