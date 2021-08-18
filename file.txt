@@ -5,12 +5,12 @@ int i ;
 x = 2 ;
 y = 1 ;
 z = a + y ;
-scanf ( z ) ;
-for ( i = 0 ; i < 5 ; i++) {
-    printf ( y ) ;
+scanf ( " %f " , & z ) ;
+for ( i = 0 ; i < 5 ; i++ ) {
+    printf ( " %d " , y ) ;
 }
-if ( x == 2 ) {
-    printf ( x ) ;
+if ( x == y && y >= x || z <= 2 ) {
+    printf ( " %d " , x ) ;
 }
-printf ( y ) ;
-printf ( x ) ;
+printf ( " %d " , y ) ;
+printf ( " %d " , x ) ;
