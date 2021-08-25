@@ -1,7 +1,10 @@
 def declaracao(linha):
     
     reservada = ['int', 'float', 'char']
+    block = ['for', 'if', 'scanf', 'printf']
     simbolos = ['.', ',', '=', '!', '(', ')', '%', '*', '+', '-', '/', '<', '>', ' ']
+    tamanho = len(linha)
+    controlador = 0
     
     if(linha[0] in reservada):
         
@@ -9,12 +12,48 @@ def declaracao(linha):
             
             if(linha[1] not in reservada and linha[1] not in simbolos):
                 
-                variaveis.append(linha[1])
+                controlador = 1
+                
+            else:
+                
+                return 1
+            
+        if(linha[1] in reservada or linha[1] in simbolos):
+            
+            return 1
+            
+        if(linha[tamanho-1] != ';'):
+            
+            return 1
+        
+        else:
+            
+            controlador = 1
+            
+    if(controlador == 1):
+        
+        variaveis.append(linha[1])
+            
+    elif(linha[0] in block):
+        
+        return 0
+    
+    elif(linha[0] in variaveis):
+        
+        return 0
+    
+    elif(linha[0] == '}'):
+        
+        return 0
+    
+    else:
+        
+        return 1
         
 
 def atribuicao(linha):
     
-    reservada = ['int', 'float', 'char']
+    reservada = ['int', 'float', 'char', 'for', 'if', 'scanf', 'printf']
     simbolos = ['.', ',', '=', '!', '(', ')', '%', '*', '+', '-', '/', '<', '>', ' ']
     operadores = ['+', '-', '*', '/']
     tamanho = len(linha)
@@ -27,6 +66,18 @@ def atribuicao(linha):
             if(linha[1] == '='):
                 
                 controle = 1
+                
+    if(linha[0] in reservada and linha[1] == '='):
+        
+        return 1
+    
+    if(linha[0] == '}'):
+        
+        return 0
+    
+    if(linha[1] == '=' and linha[0] not in reservada and linha[0] not in variaveis):
+        
+        return 1
                 
     if(controle == 1):
         
@@ -44,7 +95,7 @@ def atribuicao(linha):
                     
                 else:
                     
-                    print('Erro')
+                    return 1
                 
             elif(i % 2 != 0):
                 
@@ -58,9 +109,9 @@ def atribuicao(linha):
                     
                 else:
                     
-                    print('Erro')
-            
-            # print(i)
+                    return 1
+                
+    
             
             
 def leitura(linha):
@@ -80,7 +131,17 @@ def leitura(linha):
                     ...
                     
                 else:
-                    pass
+                    
+                    return 1
+                
+            else:
+            
+                return 1
+                
+        else:
+            
+            return 1
+        
                 
     if(linha[0] == 'printf'):
         
@@ -93,8 +154,21 @@ def leitura(linha):
                     # print('1')
                     ...
                     
+                else:
+            
+                    return 1
+                    
+            else:
+            
+                return 1
+                    
+        else:
+            
+            return 1
+                    
 def condicional(linha, contador_if):
     
+    simbolos_1 = ['.', ',', '=', '!', '(', ')', '%', '*', '+', '-', '/', '<', '>', ' ']
     reservada = ['int', 'float', 'char']
     simbolos = ['==', '>=', '<=', '!=']
     operador = ['&&', '||']
@@ -111,58 +185,127 @@ def condicional(linha, contador_if):
             
             for i in range(2, tamanho-2):
                 
+                # print(linha[i], '\n')
                 # --------------------------
                 # Erro no if
                 # --------------------------
                 
-                if(controlador == 0):
-                
-                    if(linha[i] in variaveis):
-                        
-                        print(controlador)
-                        controlador += 1
+                if(linha[2] in variaveis):
                     
-                if(controlador == 1):
-                    
-                    if(linha[i] in simbolos):
-                        
-                        print(controlador)
-                        controlador += 1
-                    
-                   
-                      
-                if(controlador == 2):
-                    
-                    if(linha[i] not in simbolos):
-                        
-                        if(linha[i] not in operador):
+                    if(controlador == 0):
+                                        
+                        if(linha[i] in variaveis):
                             
-                            if(linha[i] not in reservada):
+                            controlador += 1
+                            # print(controlador)
+                            
+                        else:
+                            
+                            return 1
+                            
+                    elif(controlador == 1):
                         
-                                print(controlador)
-                                controlador += 1
+                        if(linha[i] in simbolos):
+                            
+                            controlador += 1
+                            # print(controlador)
+                            
+                        else:
+                            
+                           return 1
                         
-                    if(linha[i] in variaveis):
+                    elif(controlador == 2):
                         
-                        print(controlador)
-                        controlador += 1
-                        print(controlador)
+                        if(linha[i] in variaveis):
+                            
+                            # print(controlador)
+                            controlador += 1
+                            # print(controlador)
+                            
+                        if(linha[i] in reservada):
+                            
+                           return 1
+                       
+                        if(linha[i] in simbolos_1):
+                            
+                            return 1
                         
-                    if(linha[i] in reservada):
+                        if(linha[i] not in simbolos):
+                            
+                            if(linha[i] not in operador):
+                                
+                                if(linha[i] not in reservada):
+                                    
+                                    if(linha[i] not in variaveis):
+                            
+                                        # print(controlador)
+                                        controlador += 1
+                                        # print(controlador)
+                               
+                    elif(controlador == 3):
                         
-                        print('erro')
-                        break
-                        
-                if(controlador == 3):
+                        if(linha[i] in operador):
+                            
+                            controlador = 0
+                            
+                        else:
+                            
+                            return 1
+
+                if(linha[2] not in variaveis):
                     
-                    if(linha[i] in operador):
+                    return 1
+            
+def repeticao(linha):
+    
+    proibido = ['int', 'float', 'char', '.', ',', '=', '!', '(', ')', '%', '*', '+', '-', '/', '<', '>', ' ', '==', '>=', '<=', '!=']
+    cont_for = ['++', '--']
+    simbolos_for = ['>=', '<=', '<', '>', '=']
+    
+    if(linha[0] == 'for'):
+        
+        if(len(linha) < 12):
+            
+            return 1
+        
+        if(linha[1] == '(' and linha[12] == ')' and linha[13] == '{'):
+            
+            if(linha[2] in variaveis and linha[6] == linha[2] and linha[10] == linha[2]):
+                
+                if(linha[3] == '=' and linha[7] in simbolos_for):
+                    
+                    if(linha[4] not in proibido and linha[8] not in proibido):
                         
-                        controlador = 0
-        
-    if(contador_if == 1):
-        
-        if(linha[0] == 'else' and linha[1] == '{'):
-            ...
+                        if(linha[5] == ';' and linha[9] == ';'):
+                    
+                            if(linha[11] in cont_for):
+                                
+                                # print('passou')
+                                ...
+                                
+                            else:
+                                
+                                return 1
+                                
+                        else:
+                                
+                            return 1
+                            
+                    else:
+                                
+                        return 1
+                        
+                else:
+                            
+                    return 1
+                    
+            else:
+                                
+                return 1
+                
+        else:
+                                
+            return 1
     
 
 texto = open('file.txt', 'r')
@@ -176,11 +319,41 @@ variaveis = list()
 for linha in linhas:
     
     linha = linha.split()
-    declaracao(linha)
-    atribuicao(linha)
-    leitura(linha)
-    condicional(linha, contador_if)
+    ret_declaracao = declaracao(linha)
+    ret_atrib = atribuicao(linha)
+    ret_leitura = leitura(linha)
+    ret_cond = condicional(linha, contador_if)
+    ret_rep = repeticao(linha)
     
+    if(ret_declaracao == 1):
+        
+        print('Erro declaração')
+        print(linha)
+        break
     
-print(linhas[11])    
-print(variaveis)
+    elif(ret_atrib == 1):
+        
+        print('Erro atribuição')
+        print(linha)
+        break
+    
+    elif(ret_leitura == 1):
+        
+        print('Erro leitura')
+        print(linha)
+        break
+    
+    elif(ret_cond == 1):
+        
+        print('Erro condição')
+        print(linha)
+        break
+    
+    elif(ret_rep == 1):
+        
+        print('Erro repetição')
+        print(linha)
+        break
+    
+# print(linhas[8])  
+# print(variaveis)
