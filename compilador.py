@@ -10,7 +10,7 @@ def declaracao(linha):
         
         if(linha[2] == ';'):
             
-            if(linha[1] not in reservada and linha[1] not in simbolos):
+            if(linha[1] not in reservada and linha[1] not in simbolos and linha[1] not in variaveis):
                 
                 controlador = 1
                 
@@ -203,6 +203,10 @@ def condicional(linha, contador_if):
         
         contador_if = 1
         
+        if(linha[1] == '(' and linha[2] == ')'):
+            
+            return 1
+        
         if(linha[1] == '(' and linha[tamanho-2] == ')' and linha[tamanho-1] == '{'):
                         
             for i in range(2, tamanho-2):
@@ -389,193 +393,125 @@ for linha in linhas:
     linha = linha.split()
     
     if(ret_declaracao != 1 and ret_atrib != 1 and ret_leitura != 1 and ret_cond != 1 and ret_rep != 1):
-        
-        if(linha[0] != 'for' and linha[0] != 'if'):
             
-            if(linha[0] == 'printf'):
-                
-                content.append('print')
-        
-                for i in range(len(linha)):
-                        
-                    if(linha[i] == '('):
-                        
-                        content.append("(f'")
-                                        
-                    elif(linha[i] in variaveis):
-                        
-                        content.append('{' + linha[i] + '}')
-                        
-                    elif(linha[i] == ')'):
-                        
-                        content.append("')")
-                        
-                    elif(linha[i] not in proibido and linha[i] != 'printf'):
-                        
-                        content.append(linha[i])
-                        
-                    elif(linha[i] == ';'):
-                        
-                        print(''.join(content))
-                        content.clear()
-
-                    else:
-                        pass
-                
-            elif(linha[0] in tipos and linha[2] == '='):
-                
-                for i in range(len(linha)-2):
+        if(linha[0] == 'printf'):
+            
+            content.append('print')
+    
+            for i in range(len(linha)):
                     
-                    if(linha[i] != ';'):
+                if(linha[i] == '('):
                     
-                        content.append(linha[i+1])
-                
-                print(' '.join(content))
-                content.clear()
-                
-            elif(linha[0] in variaveis):
-                
-                for i in range(len(linha)-1):
+                    content.append("(f'")
+                                    
+                elif(linha[i] in variaveis):
+                    
+                    content.append('{' + linha[i] + '}')
+                    
+                elif(linha[i] == ')'):
+                    
+                    content.append("')")
+                    
+                elif(linha[i] not in proibido and linha[i] != 'printf'):
                     
                     content.append(linha[i])
-                
-                print(' '.join(content))
-                content.clear()
-                
-            elif(linha[0] == 'scanf'):
-                
-                content.append(linha[7] + ' = input()')
-                
-                print(' '.join(content))
-                content.clear()
-                
-        elif(linha[0] == 'for' or linha[0] == 'if'):
-            
-            if(linha[0] == 'printf'):
-                
-                content.append('print')
-        
-                for i in range(len(linha)):
-                        
-                    if(linha[i] == '('):
-                        
-                        content.append("(f'")
-                                        
-                    elif(linha[i] in variaveis):
-                        
-                        content.append('{' + linha[i] + '}')
-                        
-                    elif(linha[i] == ')'):
-                        
-                        content.append("')")
-                        
-                    elif(linha[i] not in proibido and linha[i] != 'printf'):
-                        
-                        content.append(linha[i])
-                        
-                    elif(linha[i] == ';'):
-                        
-                        print(''.join(content))
-                        content.clear()
+                    
+                elif(linha[i] == ';'):
+                    
+                    print(''.join(content))
+                    content.clear()
 
-                    else:
-                        pass
+                else:
+                    pass
+            
+        elif(linha[0] in tipos and linha[2] == '='):
+            
+            for i in range(len(linha)-2):
                 
-            elif(linha[0] in tipos and linha[2] == '='):
+                if(linha[i] != ';'):
                 
-                for i in range(len(linha)-2):
+                    content.append(linha[i+1])
+            
+            print(' '.join(content))
+            content.clear()
+            
+        elif(linha[0] in variaveis):
+            
+            for i in range(len(linha)-1):
+                
+                content.append(linha[i])
+            
+            print(' '.join(content))
+            content.clear()
+            
+        elif(linha[0] == 'scanf'):
+            
+            content.append(linha[7] + ' = input()')
+            
+            print(' '.join(content))
+            content.clear()
+                
+        elif(linha[0] == 'for'):
+            
+            content.append('for ')
+            
+            if(linha[2] in variaveis):
                     
-                    if(linha[i] != ';'):
+                content.append(linha[2] + ' in range(' + linha[8] + '):')
+            
+            print(''.join(content))
+            content.clear()
                     
-                        content.append(linha[i+1])
+        elif(linha[0] == 'if'):
+            
+            content.append('if')
+            
+            for i in range(len(linha)):
                 
-                print(' '.join(content))
-                content.clear()
+                # print(linha[14])
                 
-            elif(linha[0] in variaveis):
-                
-                for i in range(len(linha)-1):
+                if(linha[i] == '('):
+                    
+                    content.append('(')
+                    
+                elif(linha[i] in variaveis):
                     
                     content.append(linha[i])
-                
-                print(' '.join(content))
-                content.clear()
-                
-            elif(linha[0] == 'scanf'):
-                
-                content.append(linha[7] + ' = input()')
-                
-                print(' '.join(content))
-                content.clear()
-                
-            elif(linha[0] == 'for'):
-                
-                content.append('for ')
-                
-                if(linha[2] in variaveis):
-                        
-                    content.append(linha[2] + ' in range(' + linha[8] + '):')
                     
-                elif(linha[len(linha)-1] == '{'):
+                elif(linha[i] == ')'):
                     
-                    content.append('\n')
-                
-                print(''.join(content))
-                content.clear()
-                        
-            elif(linha[0] == 'if'):
-                
-                content.append('')
-                content.append('if')
-                
-                for i in range(len(linha)):
+                    content.append("):")
                     
-                    # print(linha[14])
+                elif(linha[i] not in proibido and linha[i] != 'if'):
                     
-                    if(linha[i] == '('):
-                        
-                        content.append('(')
-                        
-                    elif(linha[i] in variaveis):
-                        
-                        content.append(linha[i])
-                        
-                    elif(linha[i] == ')'):
-                        
-                        content.append("):")
-                        
-                    elif(linha[i] not in proibido and linha[i] != 'if'):
-                        
-                        content.append(linha[i])
-                        
-                    elif(linha[i] == '>='):
-                        
-                        content.append('>=')
-                        
-                    elif(linha[i] == '<='):
-                        
-                        content.append('<=')
-                        
-                    elif(linha[i] == '!='):
-                        
-                        content.append('!=')
-                        
-                    elif(linha[i] == '=='):
-                        
-                        content.append('==')
-                        
-                    elif(linha[i] == '&&'):
-                        
-                        content.append('and')
-                        
-                    elif(linha[i] == '||'):
-                        
-                        content.append('or')
-                        
-                    else:
-                        pass
-                        
-                print(''.join(content))
-                content.clear()
-                
-            content.append('\t')
+                    content.append(linha[i])
+                    
+                elif(linha[i] == '>='):
+                    
+                    content.append('>=')
+                    
+                elif(linha[i] == '<='):
+                    
+                    content.append('<=')
+                    
+                elif(linha[i] == '!='):
+                    
+                    content.append('!=')
+                    
+                elif(linha[i] == '=='):
+                    
+                    content.append('==')
+                    
+                elif(linha[i] == '&&'):
+                    
+                    content.append('and')
+                    
+                elif(linha[i] == '||'):
+                    
+                    content.append('or')
+                    
+                else:
+                    pass
+                    
+            print(' '.join(content))
+            content.clear()
